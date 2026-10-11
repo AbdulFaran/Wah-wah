@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Wholesale Management - Farhan</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header><div><h1>Smart Wholesale Management</h1><p>Farhan • Wholesale Distribution System</p></div><div class="menu-wrap no-print"><button class="secondary" onclick="toggleMoreMenu()" aria-label="More reports">⋮</button><div id="moreMenu" class="more-menu" hidden><button onclick="openReport('saleWiseReport')">Sale Wise Report</button><button onclick="openReport('stockReport')">Stock Report</button><button onclick="openReport('outstandingMarketReport')">Outstanding Market Report (7 Days)</button><button onclick="openReport('profitReport')">Profit Report</button><button onclick="openReport('recoverySheetsReport')">Recovery Sheets</button><button onclick="openReport('companyReport')">Company Ledger / Payable</button></div></div></header>
+<nav id="nav">
+<button data-tab="dashboard" class="active">Dashboard</button>
+<button data-tab="products">Inventory</button>
+<button data-tab="purchasing">New Purchasing</button>
+<button data-tab="salesmen">Salesmen</button>
+<button data-tab="areas">Area Setup</button>
+<button data-tab="adjustment">Adjustment</button>
+<button data-tab="customers">Customers</button>
+<button data-tab="companies">Companies</button>
+<button data-tab="billing">Billing</button>
+<button data-tab="recovery">Recovery</button>
+<button data-tab="ledger">Customer Ledger</button>
+<button data-tab="reports">Reports</button>
+<button data-tab="backup">Backup</button>
+</nav>
+
+<main>
+<section id="dashboard" class="tab active">
+<div class="notice">Working local HTML build. Data is saved in this browser. Existing sections are kept and can be expanded step-by-step.</div>
+<div class="grid">
+<div class="card"><div class="muted">Products</div><div class="stat" id="sProducts">0</div></div>
+<div class="card"><div class="muted">Customers</div><div class="stat" id="sCustomers">0</div></div>
+<div class="card"><div class="muted">Companies</div><div class="stat" id="sCompanies">0</div></div>
+<div class="card"><div class="muted">Outstanding</div><div class="stat" id="sDue">Rs 0</div></div>
+</div>
+</section>
+
+<section id="products" class="tab">
+<div class="card"><h2>Inventory / Product Entry</h2>
+<div class="row">
+<div><label>Product Name</label><input id="pName"></div>
+<div><label>Company</label><input id="pCompany"></div>
+<div><label>Purchase Price</label><input id="pBuy" type="number"></div>
+<div><label>Sale Price</label><input id="pSale" type="number"></div>
+<div><label>Carton / Cotton Qty</label><input id="pCarton" type="number" value="0"></div>
+<div><label>Pieces per Carton</label><input id="pPerCarton" type="number" value="1"></div>
+<div><label>Box Qty</label><input id="pBox" type="number" value="0"></div>
+<div><label>Pieces per Box</label><input id="pPerBox" type="number" value="1"></div>
+<div><label>Bonus Qty</label><input id="pBonus" type="number" value="0"></div>
+</div><br><button onclick="addProduct()">Save Product</button></div>
+<div class="card"><h2>Product List</h2><input id="productSearch" placeholder="Search product/company" oninput="renderProducts()"><div id="productTable"></div></div>
+</section>
+
+<section id="customers" class="tab">
+<div class="card"><h2>Customer Account</h2><div class="row">
+<div><label>Customer Name</label><input id="cName"></div>
+<div><label>Area</label><select id="cArea"></select></div>
+<div><label>Salesman / Order Booker</label><select id="cSalesman"><option value="">Select salesman / order booker</option></select></div>
+<div><label>Opening Balance</label><input id="cOpening" type="number" value="0"></div>
+</div><br><button onclick="addCustomer()">Save Customer</button></div>
+<div class="card"><h2>Customer Ledger</h2><div id="customerTable"></div></div>
+</section>
+
+<section id="purchasing" class="tab">
+<div class="card"><h2>New Purchasing</h2><div class="row">
+<div><label>Company / Supplier</label><select id="purCompany"></select></div>
+<div><label>Product</label><select id="purProduct"></select></div>
+<div><label>Purchase Price</label><input id="purPrice" type="number" value="0"></div>
+<div><label>Carton / Cotton Qty</label><input id="purCarton" type="number" value="0"></div>
+<div><label>Pieces per Carton</label><input id="purPerCarton" type="number" value="1"></div>
+<div><label>Box Qty</label><input id="purBox" type="number" value="0"></div>
+<div><label>Pieces per Box</label><input id="purPerBox" type="number" value="1"></div>
+<div><label>Bonus Qty</label><input id="purBonus" type="number" value="0"></div>
+</div><br><button class="success" onclick="addPurchase()">Save Purchasing</button></div>
+<div class="card"><h2>Purchasing History</h2><div id="purchaseTable"></div></div>
+</section>
+
+<section id="salesmen" class="tab">
+<div class="card"><h2>Salesman / Order Booker</h2><div class="row"><div><label>Name</label><input id="smName"></div><div><label>Phone / Note</label><input id="smNote"></div></div><br><button onclick="addSalesman()">Save Salesman</button></div>
+<div class="card"><h2>Salesman List</h2><div id="salesmanTable"></div></div>
+</section>
+
+<section id="areas" class="tab">
+<div class="card"><h2>Area Setup</h2><div class="row"><div><label>Area Name</label><input id="areaName" placeholder="e.g. Bahawalnagar Market"></div></div><br><button class="success" onclick="addArea()">Save Area</button></div>
+<div class="card"><h2>Saved Areas</h2><div id="areaTable"></div></div>
+</section>
+
+<section id="adjustment" class="tab">
+<div class="card"><h2>Adjustment Entry</h2><div class="row">
+<div><label>Account Type</label><select id="adjType" onchange="renderAdjustmentTargets()"><option value="customer">Customer</option><option value="company">Company</option></select></div>
+<div><label>Account</label><select id="adjAccount"></select></div>
+<div><label>Adjustment</label><select id="adjDirection"><option value="debit">Debit / Increase Due</option><option value="credit">Credit / Reduce Due</option></select></div>
+<div><label>Amount</label><input id="adjAmount" type="number" value="0"></div>
+<div><label>Note</label><input id="adjNote" placeholder="Reason / details"></div>
+</div><br><button class="success" onclick="addAdjustment()">Save Adjustment</button></div>
+<div class="card"><h2>Adjustment History</h2><div id="adjustmentTable"></div></div>
+</section>
+
+<section id="companies" class="tab">
+<div class="card"><h2>Company / Supplier Account</h2><div class="row">
+<div><label>Company Name</label><input id="coName"></div>
+<div><label>Opening Payable</label><input id="coOpening" type="number" value="0"></div>
+</div><br><button onclick="addCompany()">Save Company</button></div>
+<div class="card"><h2>Company Payment / Khata Entry</h2><div class="row"><div><label>Company</label><select id="coPayCompany"></select></div><div><label>Payment Amount</label><input id="coPayAmount" type="number" value="0"></div><div><label>Note</label><input id="coPayNote"></div></div><br><button class="success" onclick="addCompanyPayment()">Save Company Payment</button></div>
+<div class="card"><h2>Company Ledger</h2><div id="companyTable"></div></div>
+</section>
+
+<section id="billing" class="tab">
+<div class="card"><h2>Create Bill</h2><div class="row">
+<div><label>Customer</label><select id="billCustomer"></select></div>
+<div><label>Salesman / Order Booker</label><select id="billSalesman"></select></div>
+<div><label>Previous Balance</label><input id="billPrevious" type="number" value="0"></div>
+<div><label>Discount %</label><input id="billDiscount" type="number" value="0"></div>
+</div>
+<div class="row">
+<div><label>Product</label><select id="billProduct"></select></div>
+<div><label>Quantity</label><input id="billQty" type="number" value="1"></div>
+<div><label>Bonus</label><input id="billBonus" type="number" value="0"></div>
+</div><br>
+<div class="actions"><button onclick="addBillLine()">Add Item</button><button class="secondary" onclick="clearBill()">Clear</button></div>
+<div id="billLines"></div><div class="total" id="billTotal">Total: Rs 0</div>
+<br><div class="actions"><button class="success" onclick="finalizeBill()">Finalize Bill</button><button onclick="window.print()">Print Bill</button></div>
+</div>
+<div class="card"><h2>Saved Bills</h2><div id="billTable"></div></div>
+</section>
+
+<section id="recovery" class="tab">
+<div class="card"><h2>Recovery Entry</h2><div class="row">
+<div><label>Customer</label><select id="recCustomer"></select></div>
+<div><label>Recovery Person</label><input id="recPerson" list="recoveryPeople" placeholder="Recovery person name"><datalist id="recoveryPeople"></datalist></div>
+<div><label>Amount</label><input id="recAmount" type="number"></div>
+<div><label>Note</label><input id="recNote"></div>
+</div><br><button class="success" onclick="addRecovery()">Save Recovery</button></div>
+<div class="card"><h2>Recovery History</h2><div id="recoveryTable"></div></div>
+</section>
+
+<section id="reports" class="tab">
+<div class="card"><h2>Reports</h2><div class="actions">
+<button onclick="customerReport()">Customer Outstanding</button>
+<button onclick="salesmanReport()">Salesman Report</button>
+<button onclick="companyReport()">Company Payable</button>
+<button onclick="recoveryReport()">Recovery Report</button>
+<button onclick="window.print()">Print Current Report</button>
+</div><div id="reportOutput"></div></div>
+</section>
+
+<section id="ledger" class="tab">
+<div class="card"><h2>Customer Ledger / Khata</h2><div class="row"><div><label>Choose Customer</label><select id="ledgerCustomer"></select></div><div><label>From Date</label><input id="ledgerFrom" type="date"></div><div><label>To Date</label><input id="ledgerTo" type="date"></div></div><br><div class="actions"><button onclick="showCustomerLedger()">Show Ledger</button><button onclick="window.print()">Print Ledger</button></div><div id="ledgerOutput"></div></div>
+</section>
+
+<section id="backup" class="tab">
+<div class="card"><h2>Backup / Restore</h2><p class="muted">Export all local data to a JSON backup, or restore a previous backup.</p>
+<div class="actions"><button onclick="exportBackup()">Download Backup</button><button class="secondary" onclick="document.getElementById('restoreFile').click()">Restore Backup</button><input id="restoreFile" type="file" accept=".json" hidden onchange="restoreBackup(event)"></div>
+</div>
+</section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
